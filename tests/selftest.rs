@@ -177,3 +177,19 @@ fn workspace_default_packages() {
         assert_eq!(default_packages, workspace_packages);
     }
 }
+
+#[test]
+#[cfg(feature = "unstable")]
+fn build_dir() {
+    let metadata = MetadataCommand::new()
+        .no_deps()
+        .other_options(["-Zbuild-dir"].map(str::to_string))
+        .exec()
+        .unwrap();
+
+    assert!(&metadata.build_directory.is_some());
+    assert!(&metadata
+        .build_directory
+        .unwrap()
+        .ends_with("cargo_metadata/target"));
+}
